@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css"
+      rel="stylesheet"
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <v-app>
+          <div>
+            <v-app-bar app id="appbarmain"
+              absolute
+            >
+        
+              <v-toolbar-title>Criptomonedas</v-toolbar-title>
+        
+              <v-spacer></v-spacer>
+              <v-btn href="#" target="_blank" style="margin-right: 10px;"
+              color="primary">
+                Repositorio
+              </v-btn>
+              <v-btn href="https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd" target="_blank" color="warning">
+                API
+              </v-btn>
+            </v-app-bar>
+          </div>
+          <v-main>
+            <v-container class="mt-10">
+              <v-parallax
+              dark
+              src="assets/crypto.webp"
+            >
+              <v-row
+                align="center"
+                justify="center"
+              >
+                <v-col
+                  class="text-center"
+                  cols="12"
+                >
+                  <h1 class="display-1 font-weight-thin mb-4">
+                    Precios de cri­pto­mo­ne­das
+                  </h1>
+                  <h3 class="subheading">
+                    Consulte las tasas más recientes antes de comprar.
+                  </h3>
+                </v-col>
+              </v-row>
+            </v-parallax>
+              <v-row
+              align="center"
+              justify="space-around"
+            >
+            <div class="bitcoin">
+              <v-alert
+      border="left"
+      colored-border
+      color="deep-purple accent-4"
+      elevation="2"
+    >
+    <h1 class="text-center">{{datos[0].symbol}}: {{datos[0].name}}</h1>
+    <img v-bind:src="datos[0].image" v-bind:alt="datos[0].name">
+    <h2>Precio actual: ${{datos[0].current_price}}</h2>
+    <h3>Precio mas alto 24h: ${{datos[0].high_24h}}</h3>
+    <h3>Precio mas bajo 24h: ${{datos[0].low_24h}}</h3>
+    </v-alert>
+            </div>
+            <div class="Ethereum">
+              <v-alert
+      border="top"
+      colored-border
+      color="green darken-1"
+      elevation="2"
+    >
+              <h1 class="text-center">{{datos[1].symbol}}: {{datos[1].name}}</h1>
+              <img v-bind:src="datos[1].image" v-bind:alt="datos[1].name">
+              <h2>Precio actual: ${{datos[1].current_price}}</h2>
+              <h3>Precio mas alto 24h: ${{datos[1].high_24h}}</h3>
+              <h3>Precio mas bajo 24h: ${{datos[1].low_24h}}</h3>
+            </v-alert>
+            </div>
+            <div class="Dogecoin">
+              <v-alert
+      border="right"
+      colored-border
+      color="blue darken-2"
+      elevation="2"
+    >
+              <h1 class="text-center">{{datos[2].symbol}}: {{datos[2].name}}</h1>
+              <img v-bind:src="datos[2].image" v-bind:alt="datos[2].name">
+              <h2>Precio actual: ${{datos[2].current_price}}</h2>
+              <h3>Precio mas alto 24h: ${{datos[2].high_24h}}</h3>
+              <h3>Precio mas bajo 24h: ${{datos[2].low_24h}}</h3>
+            </v-alert>
+            </div>
+            </v-row>
+            <v-divider class="mt-10"></v-divider>
+            </v-container>
+            <v-container class="tabla">
+              <h1 class="text-center mb-5">La siguiente tabla muestra el comportamiento de las diferentes criptomonedas en tiempo real.</h1>
+              <template>
+                <v-data-table
+                  :headers="headers"
+                  :items="datos"
+                  :items-per-page="10"
+                  class="elevation-1"
+                ></v-data-table>
+              </template>
+            </v-container>
+          </v-main>
+        <v-footer padless>
+    <v-col
+      class="text-center"
+      cols="10"
+    >
+      {{ new Date().getFullYear() }} — <strong>Precio Criptomonedas</strong>
+    </v-col>
+    <v-col cols="2" class="text-right">
+      <v-switch
+      v-model="$vuetify.theme.dark"
+      hint="Modo oscuro"
+      inset
+      persistent-hint
+    ></v-switch>
+    </v-col>
+  </v-footer>
+      </v-app>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      new Vue({
+        el: "#app",
+        vuetify: new Vuetify(),
+        data() {
+          return {
+            datos: '',
+            headers: [
+          {
+            text: 'CRIPTOMONEDA',
+            align: 'start',
+            sortable: false,
+            value: 'name',
+          },
+          { text: 'PRECIO $', value: 'current_price' },
+          { text: 'Precio mas alto 24h $', value: 'high_24h' },
+          { text: 'Precio mas bajo 24h $', value: 'low_24h' },
+          { text: 'MARKET CAP', value: 'market_cap' },
+        ]
+          };
+        },
+        mounted() {
+  axios
+  .get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd')
+  .then(response => (this.datos = response.data))
+        },
+        filters: {
+          currencydecimal(value) {
+            return value.toFixed(2);
+          },
+        },
+      });
+    </script>
+    <style>
+      #app {
+        padding: 0%;
+      }
+    </style>
+  </body>
+</html>
